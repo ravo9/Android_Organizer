@@ -6,7 +6,12 @@
     android:layout_height="match_parent"
     tools:context="ozog.szumlanski.development.organizer.MainWindow">
 
-    <include layout="@layout/content_main_window" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_main_window" />
 
+    <include
+        layout="@layout/task_creation_window"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,15 +35,15 @@ public class MainWindow extends AppCompatActivity {
         c = getApplicationContext();
 
         taskListString = new ArrayList<>();
-        listToListViewAdapter = new ArrayAdapter<String>
-                (c, android.R.layout.simple_list_item_1, taskListString);
+        listToListViewAdapter = new ArrayAdapter<String> (c, android.R.layout.simple_list_item_1, taskListString);
         taskList = findViewById(R.id.taskList);
         taskList.setAdapter(listToListViewAdapter);
-        displayTasks();
     }
 
 
-    public void displayTasks() {
-
+    public void addTask(View v) {
+        Log.e("ssd", "SSDS");
+        taskListString.add("First task!");
+        listToListViewAdapter.notifyDataSetChanged();
     }
 }
