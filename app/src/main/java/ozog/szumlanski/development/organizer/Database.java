@@ -30,8 +30,8 @@ public class Database extends SQLiteOpenHelper {
 
     //Creates database
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS" + TABLE_TASKS + "("
-                + KEY_TITLE + " TEXT," + KEY_ID + " INT PRIMARY KEY AUTOINCREMENT," + ")";
+        String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TASKS + "("
+                + KEY_TITLE + " TEXT," + KEY_ID + " INT PRIMARY KEY" + ")";
         db.execSQL(CREATE_TASKS_TABLE);
     }
 
