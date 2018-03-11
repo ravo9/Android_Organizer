@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainWindow extends AppCompatActivity {
@@ -44,18 +45,27 @@ public class MainWindow extends AppCompatActivity {
     public static TextView contentTextView;
 
     public static List<Task> allTasks;
-    public static List<String> titles;
+    public static List<String> display;
+    public static List<String> contents;
+    public static List<Date> notifDates;
+    public static List<String> status;
 
     public void updateTasks() {
         allTasks = db.getAllTasks();
 
-        titles = new ArrayList<>();
+       display = new ArrayList<>();
+        contents = new ArrayList<>();
+        notifDates = new ArrayList<>();
+        status = new ArrayList<>();
+
 
         for(Task singleTask : allTasks) {
-            titles.add(singleTask.getTitle());
+            display.add(singleTask.getTitle() + ": " + singleTask.getContent());
         }
 
-        listToListViewAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, titles);
+
+        listToListViewAdapter = new ArrayAdapter<String> (c, android.R.layout.simple_list_item_1, display);
+
         taskList = findViewById(R.id.taskList);
         taskList.setAdapter(listToListViewAdapter);
     }
@@ -96,13 +106,18 @@ public class MainWindow extends AppCompatActivity {
 
     public void createTask(View v)
     {
-        db.addTask(new Task(titleTextView.getText().toString(), db.getTaskCount() + 1));
+        db.addTask(new Task(titleTextView.getText().toString(), (db.getTaskCount() + 1),
+                contentTextView.getText().toString(), "date", "status"));
         rlAddTask.setVisibility(View.INVISIBLE);
 
         updateTasks();
         listToListViewAdapter.notifyDataSetChanged();
     }
 
+    public void onTaskClick(View v)
+    {
+
+    }
 
     //Methods for dimming background layouts
     public static void applyDim(@NonNull ViewGroup parent, float dimAmount){
