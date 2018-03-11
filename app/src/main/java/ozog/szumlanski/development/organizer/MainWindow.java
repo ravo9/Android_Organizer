@@ -63,7 +63,9 @@ public class MainWindow extends AppCompatActivity {
             display.add(singleTask.getTitle() + ": " + singleTask.getContent());
         }
 
+
         listToListViewAdapter = new ArrayAdapter<String> (c, android.R.layout.simple_list_item_1, display);
+
         taskList = findViewById(R.id.taskList);
         taskList.setAdapter(listToListViewAdapter);
     }
