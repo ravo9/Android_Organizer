@@ -7,7 +7,7 @@
     android:layout_height="320dp"
     android:layout_alignParentTop="false"
     android:layout_gravity="center_horizontal|center_vertical"
-    android:background="@android:color/background_light"
+    android:background="@drawable/add_bg"
     tools:context="ozog.szumlanski.development.organizer.MainWindow"
     tools:showIn="@layout/activity_main_window"
     tools:visibility="visible">
@@ -21,6 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="31dp"
         android:text="Add your task!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:textSize="24sp" />
 
     <EditText
@@ -51,12 +52,16 @@
 
     <Button
         android:id="@+id/buttonAdd"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
+        android:backgroundTint="@color/colorAccent"
+        android:elevation="0dp"
         android:onClick="createTask"
-        android:text="Let's do that!" />
+        android:text="Let's do that!"
+        android:visibility="visible" />
 
 </RelativeLayout>
