@@ -21,8 +21,13 @@ public class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "mydatabase";
     private static final String TABLE_TASKS = "tasks";
 
+
+
     private static final String KEY_TITLE = "title";
     private static final String KEY_ID = "id"; // AUTOINCREMENT functionality from SQL used
+    private static final String KEY_CONTENT = "content";
+    private static final String KEY_NOTIFDATE = "notifdate";
+    private static final String KEY_STATUS = "status";
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +36,8 @@ public class Database extends SQLiteOpenHelper {
     //Creates database
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TASKS + "("
-                + KEY_TITLE + " TEXT," + KEY_ID + " INT PRIMARY KEY" + ")";
+                + KEY_TITLE + " TEXT," + KEY_ID + " INT PRIMARY KEY," + KEY_CONTENT + " TEXT,"
+                + KEY_NOTIFDATE + " TEXT," + KEY_STATUS + " TEXT" + ")";
         db.execSQL(CREATE_TASKS_TABLE);
     }
 
@@ -47,6 +53,9 @@ public class Database extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, task.getTitle());
         values.put(KEY_ID, task.getId());
+        values.put(KEY_CONTENT, task.getContent());
+        values.put(KEY_NOTIFDATE, task.getNotifDate().toString());
+        values.put(KEY_STATUS, task.getStatus());
 
         db.insert(TABLE_TASKS, null, values);
         db.close();
@@ -57,12 +66,16 @@ public class Database extends SQLiteOpenHelper {
         List<Task> taskList = new ArrayList<Task>();
         String selectQuery = "SELECT * FROM " + TABLE_TASKS;
         SQLiteDatabase db = this.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
                 Task task = new Task();
                 task.setTitle(cursor.getString(0));
                 task.setId(Integer.parseInt(cursor.getString(1)));
+                task.setContent(cursor.getString(2));
+                task.setNotifDate(cursor.getString(3));
+                task.setStatus(cursor.getString(4));
                 taskList.add(task);
             } while (cursor.moveToNext());
         }
@@ -106,7 +119,8 @@ public class Database extends SQLiteOpenHelper {
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        Task task = new Task(cursor.getString(0), Integer.parseInt(cursor.getString(1)));
+        Task task = new Task(cursor.getString(0), Integer.parseInt(cursor.getString(1)),
+                cursor.getString(2), cursor.getString(3), cursor.getString(4));
 
         return task;
     }
