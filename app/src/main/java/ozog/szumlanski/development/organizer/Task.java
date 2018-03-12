@@ -8,31 +8,32 @@ import java.util.Date;
 
 public class Task {
 
-
-    private String title;
+    private int id;
     private String content;
+    private String createDate;
     private String notifDate;
     private String status;
-    private int id;
+
 
 
     public Task(){
     }
 
-    public Task(String title, int id, String content, String notifDate, String status) {
-        this.title = title;
+    public Task(int id, String content, String createDate, String notifDate, String status) {
         this.id = id;
         this.content = content;
+        this.createDate = createDate;
         this.notifDate = notifDate;
         this.status = "current";
     }
+    public Task(int id, String content, String createDate, String status) {
+        this.id = id;
+        this.content = content;
+        this.createDate = createDate;
+        this.status = status;
+    }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getTitle() {
-        return title;
-    }
+
 
 
     public void setId(int id) {
@@ -47,6 +48,13 @@ public class Task {
     }
     public String getContent() {
         return content;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+    public String getCreateDate() {
+        return createDate;
     }
 
     public void setNotifDate(String notifDate) {

@@ -40,34 +40,24 @@ public class MainWindow extends AppCompatActivity {
 
     public static ListView taskList;
     public static ArrayAdapter<String> listToListViewAdapter;
+    CustomArrayAdapter adapter;
 
     public static TextView titleTextView;
     public static TextView contentTextView;
 
     public static List<Task> allTasks;
     public static List<String> display;
-    public static List<String> contents;
-    public static List<Date> notifDates;
-    public static List<String> status;
 
     public void updateTasks() {
         allTasks = db.getAllTasks();
 
-       display = new ArrayList<>();
-        contents = new ArrayList<>();
-        notifDates = new ArrayList<>();
-        status = new ArrayList<>();
-
+        display.clear();
 
         for(Task singleTask : allTasks) {
-            display.add(singleTask.getTitle() + ": " + singleTask.getContent());
+            display.add(singleTask.getContent());
         }
 
-
-        listToListViewAdapter = new ArrayAdapter<String> (c, android.R.layout.simple_list_item_1, display);
-
-        taskList = findViewById(R.id.taskList);
-        taskList.setAdapter(listToListViewAdapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -82,7 +72,14 @@ public class MainWindow extends AppCompatActivity {
         titleTextView = findViewById(R.id.title);
         contentTextView = findViewById(R.id.content);
 
+        display = new ArrayList<>();
+
+        adapter = new CustomArrayAdapter(display, this);
+        taskList = findViewById(R.id.taskList);
+        taskList.setAdapter(adapter);
+
         db = new Database(this);
+        //db.dropTasksTable();
         db.createTable();
         updateTasks();
 
@@ -91,45 +88,34 @@ public class MainWindow extends AppCompatActivity {
 
 
     public void addTask(View v) {
-        //taskListString.add("First task!");
-        //listToListViewAdapter.notifyDataSetChanged();
 
         rlAddTask.setVisibility(View.VISIBLE);
-
-
-
-        /*
-        //Dimming the background
-        ViewGroup root = (ViewGroup) getWindow().getDecorView().getRootView();
-        applyDim(root, 0.5f); */
     }
 
     public void createTask(View v)
     {
-        db.addTask(new Task(titleTextView.getText().toString(), (db.getTaskCount() + 1),
-                contentTextView.getText().toString(), "date", "status"));
+        Log.d("Przed:", Integer.toString(newId()));
+        db.addTask(new Task(newId(), contentTextView.getText().toString(), "create", "notif", "status"));
+        Log.d("Po:", Integer.toString(newId()));
         rlAddTask.setVisibility(View.INVISIBLE);
 
         updateTasks();
-        listToListViewAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     public void onTaskClick(View v)
     {
 
     }
-
-    //Methods for dimming background layouts
-    public static void applyDim(@NonNull ViewGroup parent, float dimAmount){
-        Drawable dim = new ColorDrawable(Color.BLACK);
-        dim.setBounds(0, 0, parent.getWidth(), parent.getHeight());
-        dim.setAlpha((int) (255 * dimAmount));
-
-        ViewGroupOverlay overlay = parent.getOverlay();
-        overlay.add(dim);
-    }
-    public static void clearDim(@NonNull ViewGroup parent) {
-        ViewGroupOverlay overlay = parent.getOverlay();
-        overlay.clear();
+    public int newId() {
+        int lastId = 0;
+        allTasks = db.getAllTasks();
+        for(Task task : allTasks) {
+            Log.d("ID is:", Integer.toString(task.getId()));
+            if(task.getId() >= lastId) {
+                lastId = task.getId() + 1;
+            }
+        }
+        return lastId;
     }
 }
