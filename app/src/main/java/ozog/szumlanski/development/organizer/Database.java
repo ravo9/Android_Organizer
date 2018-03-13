@@ -37,7 +37,7 @@ public class Database extends SQLiteOpenHelper {
                 + KEY_NOTIFDATE + " TEXT NULL," + KEY_STATUS + " TEXT" + ")";
         db.execSQL(CREATE_TASKS_TABLE);
 
-        String CREATE_ARCHIVE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TASKS + "("
+        String CREATE_ARCHIVE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ARCHIVE + "("
                 + KEY_ID + " INT PRIMARY KEY," + KEY_CONTENT + " TEXT," + KEY_CREATEDATE + " TEXT,"
                 + " TEXT NULL," + KEY_STATUS + " TEXT" + ")";
         db.execSQL(CREATE_ARCHIVE_TABLE);
@@ -162,5 +162,12 @@ public class Database extends SQLiteOpenHelper {
         }
         return taskList;
     }
-
+    public int getArchivedTaskCount() {
+        String countQuery = "SELECT * FROM " + TABLE_ARCHIVE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
 }

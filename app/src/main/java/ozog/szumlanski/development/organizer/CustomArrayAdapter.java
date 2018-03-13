@@ -1,6 +1,7 @@
 package ozog.szumlanski.development.organizer;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
     private List<String> list;
     private Context context;
+    Database db = new Database(MainWindow.c);
 
 
 
@@ -62,19 +64,37 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
         notDoneBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                list.remove(position); //or some other task
+                Task clickedTask = focusedTask(position);
+                setArchiveTaskId(clickedTask);
+                db.archiveTask(clickedTask);
+                db.removeTask(focusedTask(position));
+                list.remove(position);
                 notifyDataSetChanged();
             }
         });
         doneBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
+                Task clickedTask = focusedTask(position);
+                setArchiveTaskId(clickedTask);
+                clickedTask.setStatus("done");
+                db.archiveTask(clickedTask);
+                db.removeTask(focusedTask(position));
+                list.remove(position);
                 notifyDataSetChanged();
             }
         });
 
         return view;
+    }
+    public Task focusedTask(int position) {
+        List<Task> tasks;
+        tasks = db.getAllTasks();
+        return tasks.get(position);
+    }
+    public void setArchiveTaskId(Task task) {
+        int newId;
+        newId = db.getArchivedTaskCount() + 1;
+        task.setId(newId);
     }
 }

@@ -39,7 +39,6 @@ public class MainWindow extends AppCompatActivity {
     public static Database db;
 
     public static ListView taskList;
-    public static ArrayAdapter<String> listToListViewAdapter;
     CustomArrayAdapter adapter;
 
     public static TextView titleTextView;
@@ -80,10 +79,13 @@ public class MainWindow extends AppCompatActivity {
 
         db = new Database(this);
         //db.dropTasksTable();
+        //db.dropArchiveTable();
         db.createTable();
         updateTasks();
 
         rlAddTask.setVisibility(View.INVISIBLE);
+        Log.d("Tasks in Database", Integer.toString(db.getTaskCount()));
+        Log.d("Tasks in Archive", Integer.toString(db.getArchivedTaskCount()));
     }
 
 
@@ -94,9 +96,7 @@ public class MainWindow extends AppCompatActivity {
 
     public void createTask(View v)
     {
-        Log.d("Przed:", Integer.toString(newId()));
         db.addTask(new Task(newId(), contentTextView.getText().toString(), "create", "notif", "status"));
-        Log.d("Po:", Integer.toString(newId()));
         rlAddTask.setVisibility(View.INVISIBLE);
 
         updateTasks();
@@ -111,7 +111,6 @@ public class MainWindow extends AppCompatActivity {
         int lastId = 0;
         allTasks = db.getAllTasks();
         for(Task task : allTasks) {
-            Log.d("ID is:", Integer.toString(task.getId()));
             if(task.getId() >= lastId) {
                 lastId = task.getId() + 1;
             }
