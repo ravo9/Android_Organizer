@@ -44,4 +44,31 @@
         android:layout_marginTop="45dp"
         />
 
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/btnAdd"
+        android:layout_below="@+id/btnAdd"
+        android:layout_marginTop="53dp"
+        android:onClick="datePicker"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/date"
+        android:layout_below="@+id/date"
+        android:layout_marginEnd="11dp"
+        android:layout_marginTop="39dp"
+        android:onClick="timePicker"
+        android:clickable="true"
+        android:focusable="false"
+        android:ems="10"
+        android:inputType="time" />
+
 </RelativeLayout>
