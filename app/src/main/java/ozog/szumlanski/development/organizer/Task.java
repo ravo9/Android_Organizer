@@ -1,40 +1,22 @@
 package ozog.szumlanski.development.organizer;
 
-import java.util.Date;
-
-/**
- * Created by Przemek on 10/03/2018.
- */
-
 public class Task {
 
     private int id;
     private String content;
     private String createDate;
-    private String notifDate;
+    //private String notifDate;
     private String status;
-
-
 
     public Task(){
     }
 
-    public Task(int id, String content, String createDate, String notifDate, String status) {
-        this.id = id;
-        this.content = content;
-        this.createDate = createDate;
-        this.notifDate = notifDate;
-        this.status = "current";
-    }
     public Task(int id, String content, String createDate, String status) {
         this.id = id;
         this.content = content;
         this.createDate = createDate;
         this.status = status;
     }
-
-
-
 
     public void setId(int id) {
         this.id = id;
@@ -57,12 +39,12 @@ public class Task {
         return createDate;
     }
 
-    public void setNotifDate(String notifDate) {
+    /*public void setNotifDate(String notifDate) {
         this.notifDate = notifDate;
     }
     public String getNotifDate() {
         return notifDate;
-    }
+    }*/
 
     public void setStatus(String status) {
         this.status = status;

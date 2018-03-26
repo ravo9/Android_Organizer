@@ -1,7 +1,6 @@
 package ozog.szumlanski.development.organizer;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,20 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Przemek on 12/03/2018.
- */
 
 public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
     private List<String> list;
     private Context context;
     Database db = new Database(MainWindow.c);
-
-
 
     public CustomArrayAdapter(List<String> list, Context context) {
         this.list = list;

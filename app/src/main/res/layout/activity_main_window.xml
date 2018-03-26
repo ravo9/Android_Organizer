@@ -10,8 +10,4 @@
         android:id="@+id/include"
         layout="@layout/content_main_window" />
 
-    <include
-        layout="@layout/task_creation_window"
-        />
-
 </android.support.design.widget.CoordinatorLayout>
