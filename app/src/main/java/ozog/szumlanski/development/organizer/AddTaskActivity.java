@@ -20,8 +20,8 @@ public class AddTaskActivity extends AppCompatActivity {
 
     public void createTask(View v)
     {
-        MainWindow.db.addTask(new Task(MainWindow.newId(), taskContentInput.getText().toString(), "create", "status"));
-        MainWindow.updateTasks();
+        MainWindow.db.addTask(new Task(Database.newId(), taskContentInput.getText().toString(), "create", "status"));
+        MainWindow.updateAllTasks();
         MainWindow.adapter.notifyDataSetChanged();
 
         Intent intent = new Intent(this, MainWindow.class);

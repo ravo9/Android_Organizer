@@ -8,54 +8,30 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow extends AppCompatActivity {
 
-    //layouts
-    public static RelativeLayout rlMain;
     public static Context c;
-
-    //declaring database db
     public static Database db;
 
     public static ListView taskList;
     public static CustomArrayAdapter adapter;
 
-    public static TextView titleTextView;
-    public static TextView taskContentInput;
-
     public static List<Task> allTasks;
     public static List<String> display;
-
-    public static void updateTasks() {
-
-        try {
-            allTasks = db.getAllTasks();
-            display.clear();
-            for(Task singleTask : allTasks)
-                display.add(singleTask.getContent());
-        }
-        catch (Exception e) {}
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_window);
 
-        rlMain = findViewById(R.id.RelativeLayoutMain);
         c = getApplicationContext();
 
-        titleTextView = findViewById(R.id.title);
-        taskContentInput = findViewById(R.id.taskContentInput);
-
         display = new ArrayList<>();
-
         adapter = new CustomArrayAdapter(display, this);
+
         taskList = findViewById(R.id.taskList);
         taskList.setAdapter(adapter);
 
@@ -63,10 +39,19 @@ public class MainWindow extends AppCompatActivity {
         //db.dropTasksTable();
         //db.dropArchiveTable();
         db.createTable();
-        updateTasks();
+        updateAllTasks();
 
         Log.d("Tasks in Database", Integer.toString(db.getTaskCount()));
         Log.d("Tasks in Archive", Integer.toString(db.getArchivedTaskCount()));
+    }
+
+    public static void updateAllTasks() {
+
+        allTasks = db.getAllTasks();
+        display.clear();
+        for(Task singleTask : allTasks)
+            display.add(singleTask.getContent());
+        adapter.notifyDataSetChanged();
     }
 
     public void addTask(View v) {
@@ -76,28 +61,10 @@ public class MainWindow extends AppCompatActivity {
         finish();
     }
 
-    public void createTask(View v)
-    {
-        createTask();
-    }
+    public void openDoneTasks(View v) {
 
-    public static void createTask()
-    {
-        db.addTask(new Task(newId(), taskContentInput.getText().toString(), "create", "status"));
-        updateTasks();
-        adapter.notifyDataSetChanged();
-    }
-
-    public void onTaskClick(View v) {}
-
-    public static int newId() {
-        int lastId = 0;
-        allTasks = db.getAllTasks();
-        for(Task task : allTasks) {
-            if(task.getId() >= lastId) {
-                lastId = task.getId() + 1;
-            }
-        }
-        return lastId;
+        Intent intent = new Intent(this, DoneTasks.class);
+        startActivity(intent);
+        finish();
     }
 }

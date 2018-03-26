@@ -44,6 +44,16 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public static int newId() {
+        int lastId = 0;
+        List<Task> allTasks = MainWindow.db.getAllTasks();
+        for(Task task : allTasks) {
+            if(task.getId() >= lastId)
+                lastId = task.getId() + 1;
+        }
+        return lastId;
+    }
+
     public void addTask(Task task) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -81,6 +91,7 @@ public class Database extends SQLiteOpenHelper {
 
         return taskList;
     }
+
     // Remove table "tasks" from the database
     public void dropTasksTable() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -100,6 +111,7 @@ public class Database extends SQLiteOpenHelper {
                 new String[] { String.valueOf(task.getId()) });
         db.close();
     }
+
     // Count how many tasks are stored in the "tasks" table
     public int getTaskCount() {
         String countQuery = "SELECT * FROM " + TABLE_TASKS;
@@ -109,6 +121,7 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
         return count;
     }
+
     // Fetch single task stored in the "tasks" table
     public Task getTask(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -135,11 +148,13 @@ public class Database extends SQLiteOpenHelper {
         db.insert(TABLE_ARCHIVE, null, values);
         db.close();
     }
+
     public void dropArchiveTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE " + TABLE_ARCHIVE);
         db.close();
     }
+
     public List<Task> getAllArchiveTasks() {
         List<Task> taskList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_ARCHIVE;
@@ -158,6 +173,26 @@ public class Database extends SQLiteOpenHelper {
         }
         return taskList;
     }
+
+    public List<Task> getDoneTasks() {
+        List<Task> taskList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_ARCHIVE;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task();
+                task.setId(Integer.parseInt(cursor.getString(0)));
+                task.setContent(cursor.getString(1));
+                task.setCreateDate(cursor.getString(2));
+                task.setStatus(cursor.getString(3));
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+        return taskList;
+    }
+
     public int getArchivedTaskCount() {
         String countQuery = "SELECT * FROM " + TABLE_ARCHIVE;
         SQLiteDatabase db = this.getReadableDatabase();
