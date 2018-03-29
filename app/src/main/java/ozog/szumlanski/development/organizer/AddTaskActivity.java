@@ -1,5 +1,6 @@
 package ozog.szumlanski.development.organizer;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,13 +11,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.opengl.Visibility;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -34,7 +38,13 @@ public class AddTaskActivity extends AppCompatActivity {
     public static TextView taskContentInput;
     public static TextView date;
     public static TextView time;
+    public static Switch notifSwitch;
     Calendar myCalendar = Calendar.getInstance();
+    public static Context c;
+
+
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +53,22 @@ public class AddTaskActivity extends AppCompatActivity {
         taskContentInput = findViewById(R.id.taskContentInput);
         date = findViewById(R.id.date);
         time = findViewById(R.id.time);
+        notifSwitch = findViewById(R.id.notifSwitch);
+        date.setVisibility(View.INVISIBLE);
+        time.setVisibility(View.INVISIBLE);
 
-
+        notifSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                date.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+            }
+        });
+        notifSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                date.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+            }
+        });
 
         Calendar cal = new GregorianCalendar();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -58,10 +82,8 @@ public class AddTaskActivity extends AppCompatActivity {
     public void createTask(View v)
     {
         MainWindow.db.addTask(new Task(Database.newId(), taskContentInput.getText().toString(), "create", "status"));
-        sendNotification(taskContentInput.getText().toString());
         MainWindow.updateAllTasks();
         MainWindow.adapter.notifyDataSetChanged();
-
         Intent intent = new Intent(this, MainWindow.class);
         startActivity(intent);
         finish();
@@ -111,35 +133,11 @@ public class AddTaskActivity extends AppCompatActivity {
 
         time.setText(sdf.format(myCalendar.getTime()));
     }
-    private void sendNotif(String content) {
-        NotificationManager notif=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notify=new Notification.Builder
-                (getApplicationContext())
-                .setContentTitle("Do:")
-                .setContentText(content)
-                .setSmallIcon(R.drawable.btn_add).build();
 
-        notify.flags |= Notification.FLAG_AUTO_CANCEL;
-        notif.notify(0, notify);
-    }
-    private void sendNotification(String content) {
+    private void sendNotification(String content, long notifTimeInMillis) {
         Intent intent = new Intent(this, MainWindow.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        long notifdateinMilisec;
-        String notifDate = date.getText().toString() + " " + time.getText().toString();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.UK);
-
-
-
-        try {
-            myCalendar.setTime(sdf.parse(notifDate));// all done
-        } catch (java.text.ParseException e) {}
-
-        notifdateinMilisec = myCalendar.getTimeInMillis();
-
-        Log.d("I'M HERE!!!!!!!!!!!!", notifDate);
 
         initChannels(this);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
@@ -147,7 +145,6 @@ public class AddTaskActivity extends AppCompatActivity {
                 .setContentTitle("Reminder")
                 .setContentText(content)
                 .setContentIntent(pendingIntent)
-                .setWhen(notifdateinMilisec)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -166,5 +163,46 @@ public class AddTaskActivity extends AppCompatActivity {
                 NotificationManager.IMPORTANCE_DEFAULT);
         channel.setDescription("Channel description");
         notificationManager.createNotificationChannel(channel);
+    }
+
+    public long readDateTimeInMillis() {
+        long notifdateinMilisec;
+        String notifDate = date.getText().toString() + " " + time.getText().toString();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.UK);
+
+        try {
+            myCalendar.setTime(sdf.parse(notifDate));// all done
+        } catch (java.text.ParseException e) {}
+
+        notifdateinMilisec = myCalendar.getTimeInMillis();
+        return notifdateinMilisec;
+    }
+
+    private void scheduleNotification2(Notification notification, long notifTimeInMillis) {
+
+        Intent notificationIntent = new Intent(this, AddTaskActivity.class);
+        notificationIntent.putExtra(notifReceiver.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(notifReceiver.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, notifTimeInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.btn_add);
+        return builder.build();
+    }
+
+    public void alarmHandler() {
+        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AddTaskActivity.class);
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, readDateTimeInMillis(),
+                1000 * 60 * 20, alarmIntent);
     }
 }

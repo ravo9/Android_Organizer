@@ -19,16 +19,14 @@
 
     <EditText
         android:id="@+id/taskContentInput"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Your task..."
-
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/titleAddTask"
-        android:layout_marginTop="45dp"
-        />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp"
+        android:ems="10"
+        android:hint="Your task..."
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/btnAdd"
@@ -40,35 +38,43 @@
         tools:layout_editor_absoluteY="231dp"
 
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/taskContentInput"
+        android:layout_below="@+id/date"
         android:layout_marginTop="45dp"
         />
 
     <EditText
         android:id="@+id/date"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btnAdd"
-        android:layout_below="@+id/btnAdd"
-        android:layout_marginTop="53dp"
-        android:onClick="datePicker"
+        android:layout_below="@+id/notifSwitch"
         android:clickable="true"
         android:ems="10"
         android:focusable="false"
-        android:inputType="date" />
+        android:inputType="date"
+        android:onClick="datePicker" />
 
     <EditText
         android:id="@+id/time"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/date"
+        android:layout_marginLeft="150dp"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="time"
+        android:onClick="timePicker" />
+
+    <Switch
+        android:id="@+id/notifSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/date"
-        android:layout_below="@+id/date"
-        android:layout_marginEnd="11dp"
-        android:layout_marginTop="39dp"
-        android:onClick="timePicker"
-        android:clickable="true"
-        android:focusable="false"
-        android:ems="10"
-        android:inputType="time" />
+        android:layout_alignStart="@+id/taskContentInput"
+        android:layout_below="@+id/taskContentInput"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:checked="false"
+        android:text="Set reminder"
+        tools:checked="false" />
 
 </RelativeLayout>

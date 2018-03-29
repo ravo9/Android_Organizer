@@ -25,7 +25,11 @@
 
         <activity android:name=".DoneTasks"
             android:theme="@style/AppTheme.NoActionBar" />
+        <receiver android:name=".notifReceiver" />
+
+
 
     </application>
+
 
 </manifest>

@@ -176,7 +176,7 @@ public class Database extends SQLiteOpenHelper {
 
     public List<Task> getDoneTasks() {
         List<Task> taskList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_ARCHIVE;
+        String selectQuery = "SELECT * FROM " + TABLE_ARCHIVE + " WHERE " + KEY_STATUS + "='done'";
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -201,4 +201,5 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
         return count;
     }
+
 }
