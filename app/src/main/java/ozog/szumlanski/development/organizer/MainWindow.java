@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,8 @@ public class MainWindow extends AppCompatActivity {
 
     public static ListView taskList;
     public static CustomArrayAdapter adapter;
+    public static Score s;
+    public static TextView scoreTextView;
 
     public static List<Task> allTasks;
     public static List<String> display;
@@ -29,17 +33,24 @@ public class MainWindow extends AppCompatActivity {
 
         c = getApplicationContext();
 
+
+
+
         display = new ArrayList<>();
         adapter = new CustomArrayAdapter(display, this);
 
         taskList = findViewById(R.id.taskList);
         taskList.setAdapter(adapter);
 
+
         db = new Database(this);
         //db.dropTasksTable();
         //db.dropArchiveTable();
         db.createTable();
         updateAllTasks();
+        scoreTextView = findViewById(R.id.score_text);
+        //scoreTextView.setText(s.getScore());
+        //scoreColor();
 
         Log.d("Tasks in Database", Integer.toString(db.getTaskCount()));
         Log.d("Tasks in Archive", Integer.toString(db.getArchivedTaskCount()));
@@ -66,5 +77,15 @@ public class MainWindow extends AppCompatActivity {
         Intent intent = new Intent(this, DoneTasks.class);
         startActivity(intent);
         finish();
+    }
+
+    public void scoreColor() {
+        if(s.ratingColor() == 1) {
+            scoreTextView.setBackgroundColor(getResources().getColor(R.color.green));
+        } else if (s.ratingColor() == 2) {
+            scoreTextView.setBackgroundColor(getResources().getColor(R.color.yellow));
+        } else {
+            scoreTextView.setBackgroundColor(getResources().getColor(R.color.red));
+        }
     }
 }

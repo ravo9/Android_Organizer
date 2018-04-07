@@ -6,26 +6,23 @@
     android:layout_height="match_parent"
     tools:context="ozog.szumlanski.development.organizer.AddTaskActivity">
 
-    <TextView
-        android:id="@+id/titleAddTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add New Task"
-        android:textSize="24sp"
+    <include
+        android:id="@+id/titlebar"
+        layout="@layout/title_bar"
+        tools:layout_editor_absoluteY="45dp" />
 
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        />
 
     <EditText
         android:id="@+id/taskContentInput"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/titleAddTask"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/task_height"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/red_priority"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Your task..."
+        android:textSize="@dimen/task_textsize"
+        android:textColor="@color/colorPrimary"
         android:inputType="textPersonName" />
 
     <Button
@@ -58,7 +55,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/date"
-        android:layout_marginLeft="150dp"
+        android:layout_marginStart="150dp"
         android:clickable="true"
         android:ems="10"
         android:focusable="false"
@@ -76,5 +73,31 @@
         android:checked="false"
         android:text="Set reminder"
         tools:checked="false" />
+
+    <ImageButton
+        android:id="@+id/red_priority"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/titlebar"
+        android:layout_toEndOf="@+id/yellow_priority"
+        android:background="@drawable/red_dot"
+        android:onClick="redTask" />
+
+    <ImageButton
+        android:id="@+id/yellow_priority"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/titlebar"
+        android:layout_toEndOf="@+id/green_priority"
+        android:background="@drawable/yellow_dot"
+        android:onClick="yellowTask" />
+
+    <ImageButton
+        android:id="@+id/green_priority"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/titlebar"
+        android:background="@drawable/green_dot"
+        android:onClick="greenTask" />
 
 </RelativeLayout>

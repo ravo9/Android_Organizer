@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="@dimen/task_height">
 
     <TextView
         android:id="@+id/list_item_string"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_height="@dimen/task_height"
+        style="@style/AudioFileInfoOverlayText"
         android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
         android:paddingLeft="8dp"
-        android:textSize="18sp"
+        android:textSize="@dimen/task_textsize"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/not_done_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:text="NOT DONE" />
 
-    <Button
+    <ImageButton
         android:id="@+id/done_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/not_done_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/check_btn"
+        android:layout_toStartOf="@id/not_done_btn"
+        android:layout_centerVertical="true"/>
+
+    <ImageButton
+        android:id="@+id/not_done_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/x_btn"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:text="DONE" />
+        android:layout_marginEnd="10dp"/>
 
 </RelativeLayout>

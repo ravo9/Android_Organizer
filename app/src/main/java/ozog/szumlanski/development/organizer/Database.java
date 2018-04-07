@@ -20,6 +20,7 @@ public class Database extends SQLiteOpenHelper {
     //private static final String KEY_NOTIFDATE = "notifdate";
     private static final String KEY_CREATE_DATE = "creation_date";
     private static final String KEY_STATUS = "status";
+    private static final String KEY_PRIORITY = "priority";
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,12 +30,12 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TASKS + "("
                 + KEY_ID + " INT PRIMARY KEY," + KEY_CONTENT + " TEXT," + KEY_CREATE_DATE + " TEXT,"
-                + KEY_STATUS + " TEXT" + ")";
+                + KEY_PRIORITY + " INT" + ")";
         db.execSQL(CREATE_TASKS_TABLE);
 
         String CREATE_ARCHIVE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ARCHIVE + "("
                 + KEY_ID + " INT PRIMARY KEY," + KEY_CONTENT + " TEXT," + KEY_CREATE_DATE + " TEXT,"
-                + KEY_STATUS + " TEXT" + ")";
+                + KEY_STATUS + " TEXT," + KEY_PRIORITY + " INT" + ")";
         db.execSQL(CREATE_ARCHIVE_TABLE);
     }
 
@@ -61,7 +62,7 @@ public class Database extends SQLiteOpenHelper {
         values.put(KEY_CONTENT, task.getContent());
         values.put(KEY_CREATE_DATE, task.getCreateDate());
         //values.put(KEY_NOTIFDATE, task.getNotifDate().toString());
-        values.put(KEY_STATUS, task.getStatus());
+        values.put(KEY_PRIORITY, task.getPriority());
         db.insert(TABLE_TASKS, null, values);
         db.close();
     }
@@ -81,7 +82,7 @@ public class Database extends SQLiteOpenHelper {
                     task.setContent(cursor.getString(1));
                     task.setCreateDate(cursor.getString(2));
                     //task.setNotifDate(cursor.getString(3));
-                    task.setStatus(cursor.getString(3));
+                    task.setPriority(Integer.parseInt(cursor.getString(3)));
                     taskList.add(task);
                 } while (cursor.moveToNext());
             }
@@ -130,7 +131,7 @@ public class Database extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
         Task task = new Task(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
-                cursor.getString(2), cursor.getString(3));
+                cursor.getString(2), Integer.parseInt(cursor.getString(3)));
 
         return task;
     }
@@ -145,6 +146,7 @@ public class Database extends SQLiteOpenHelper {
         values.put(KEY_CONTENT, task.getContent());
         values.put(KEY_CREATE_DATE, task.getCreateDate());
         values.put(KEY_STATUS, task.getStatus());
+        values.put(KEY_PRIORITY, task.getPriority());
         db.insert(TABLE_ARCHIVE, null, values);
         db.close();
     }
@@ -168,6 +170,7 @@ public class Database extends SQLiteOpenHelper {
                 task.setContent(cursor.getString(1));
                 task.setCreateDate(cursor.getString(2));
                 task.setStatus(cursor.getString(3));
+                task.setPriority(Integer.parseInt(cursor.getString(4)));
                 taskList.add(task);
             } while (cursor.moveToNext());
         }
@@ -187,6 +190,7 @@ public class Database extends SQLiteOpenHelper {
                 task.setContent(cursor.getString(1));
                 task.setCreateDate(cursor.getString(2));
                 task.setStatus(cursor.getString(3));
+                task.setPriority(Integer.parseInt(cursor.getString(4)));
                 taskList.add(task);
             } while (cursor.moveToNext());
         }

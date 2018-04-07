@@ -9,11 +9,12 @@ import java.util.List;
 
 public class DoneTasks extends AppCompatActivity {
 
-    public static ListView doneTasksListView;
-    public static CustomArrayAdapter adapter;
+    private static ListView doneTasksListView;
+    private static CustomArrayAdapter adapter;
+    private static Database db = new Database(MainWindow.c);
 
-    public static List<Task> doneTasks;
-    public static List<String> display;
+    private static List<Task> doneTasks;
+    private static List<String> display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class DoneTasks extends AppCompatActivity {
 
     public static void updateDoneTasks() {
 
-        doneTasks = MainWindow.db.getDoneTasks();
+        doneTasks = db.getDoneTasks();
         display.clear();
         for(Task singleTask : doneTasks)
             display.add(singleTask.getContent());

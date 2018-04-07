@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -39,8 +40,15 @@ public class AddTaskActivity extends AppCompatActivity {
     public static TextView date;
     public static TextView time;
     public static Switch notifSwitch;
+    public static ImageButton redBtn;
+    public static ImageButton yellowBtn;
+    public static ImageButton greenBtn;
     Calendar myCalendar = Calendar.getInstance();
     public static Context c;
+    String currentDate;
+    String currentTime;
+    String currentDateTime = currentDate + " " + currentTime;
+    int priority = 0;
 
 
     private AlarmManager alarmMgr;
@@ -56,6 +64,10 @@ public class AddTaskActivity extends AppCompatActivity {
         notifSwitch = findViewById(R.id.notifSwitch);
         date.setVisibility(View.INVISIBLE);
         time.setVisibility(View.INVISIBLE);
+        redBtn = findViewById(R.id.red_priority);
+        yellowBtn = findViewById(R.id.yellow_priority);
+        greenBtn = findViewById(R.id.green_priority);
+        taskContentInput.setVisibility(View.INVISIBLE);
 
         notifSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -70,18 +82,17 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
 
-        Calendar cal = new GregorianCalendar();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        dateFormat.setTimeZone(cal.getTimeZone());
-        timeFormat.setTimeZone(cal.getTimeZone());
-        date.setText(dateFormat.format(cal.getTime()));
-        time.setText(timeFormat.format(cal.getTime()));
+        currentDateTime();
+        date.setText(currentDate);
+        time.setText(currentTime);
     }
 
     public void createTask(View v)
     {
-        MainWindow.db.addTask(new Task(Database.newId(), taskContentInput.getText().toString(), "create", "status"));
+        currentDateTime();
+        String log;
+        Log.d("Priority: ", String.valueOf(priority));
+        MainWindow.db.addTask(new Task(Database.newId(), taskContentInput.getText().toString(), currentDateTime, priority));
         MainWindow.updateAllTasks();
         MainWindow.adapter.notifyDataSetChanged();
         Intent intent = new Intent(this, MainWindow.class);
@@ -127,6 +138,53 @@ public class AddTaskActivity extends AppCompatActivity {
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.show();
     }
+
+    public void redTask(View v) {
+        priority = 3;
+        redBtn.setBackground(getResources().getDrawable(
+                R.drawable.red_check));
+        yellowBtn.setBackground(getResources().getDrawable(
+                R.drawable.yellow_dot));
+        greenBtn.setBackground(getResources().getDrawable(
+                R.drawable.green_dot));
+        taskContentInput.setBackground(getResources().getDrawable(
+                R.drawable.red_task));
+        taskContentInput.setVisibility(View.VISIBLE);
+    }
+    public void yellowTask(View v) {
+        priority = 2;
+        yellowBtn.setBackground(getResources().getDrawable(
+                R.drawable.yellow_check));
+        redBtn.setBackground(getResources().getDrawable(
+                R.drawable.red_dot));
+        greenBtn.setBackground(getResources().getDrawable(
+                R.drawable.green_dot));
+        taskContentInput.setBackground(getResources().getDrawable(
+                R.drawable.yellow_task));
+        taskContentInput.setVisibility(View.VISIBLE);
+    }
+    public void greenTask(View v) {
+        priority = 1;
+        greenBtn.setBackground(getResources().getDrawable(
+                R.drawable.green_check));
+        yellowBtn.setBackground(getResources().getDrawable(
+                R.drawable.yellow_dot));
+        redBtn.setBackground(getResources().getDrawable(
+                R.drawable.red_dot));
+        taskContentInput.setBackground(getResources().getDrawable(
+                R.drawable.green_task));
+        taskContentInput.setVisibility(View.VISIBLE);
+    }
+
+
+
+
+
+
+
+    //NOTIFICATIONS
+
+
     private void updateTime() {
         String myFormat = "HH:mm"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
@@ -204,5 +262,15 @@ public class AddTaskActivity extends AppCompatActivity {
 
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, readDateTimeInMillis(),
                 1000 * 60 * 20, alarmIntent);
+    }
+
+    public void currentDateTime() {
+        Calendar cal = new GregorianCalendar();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        dateFormat.setTimeZone(cal.getTimeZone());
+        timeFormat.setTimeZone(cal.getTimeZone());
+        currentDate = dateFormat.format(cal.getTime());
+        currentTime = timeFormat.format(cal.getTime());
     }
 }

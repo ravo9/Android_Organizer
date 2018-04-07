@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.List;
 
@@ -14,6 +16,8 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
     private List<String> list;
     private Context context;
     Database db = new Database(MainWindow.c);
+
+
 
     public CustomArrayAdapter(List<String> list, Context context) {
         this.list = list;
@@ -44,19 +48,32 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
             view = inflater.inflate(R.layout.listview_item_layout, null);
         }
 
+        
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
         listItemText.setText(list.get(position));
+        if(focusedTask(position).getPriority() == 1) {
+            listItemText.setBackground(MainWindow.c.getResources().getDrawable(
+                    R.drawable.green_task));
+        } else if(focusedTask(position).getPriority() == 2) {
+            listItemText.setBackground(MainWindow.c.getResources().getDrawable(
+                    R.drawable.yellow_task));
+        } else if (focusedTask(position).getPriority() == 3) {
+            listItemText.setBackground(MainWindow.c.getResources().getDrawable(
+                    R.drawable.red_task));
+        }
+
 
         //Handle buttons and add onClickListeners
-        Button notDoneBtn = (Button)view.findViewById(R.id.not_done_btn);
-        Button doneBtn = (Button)view.findViewById(R.id.done_btn);
+        ImageButton notDoneBtn = (ImageButton)view.findViewById(R.id.not_done_btn);
+        ImageButton doneBtn = (ImageButton)view.findViewById(R.id.done_btn);
 
         notDoneBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Task clickedTask = focusedTask(position);
                 setArchiveTaskId(clickedTask);
+                clickedTask.setStatus("notdone");
                 db.archiveTask(clickedTask);
                 db.removeTask(focusedTask(position));
                 list.remove(position);

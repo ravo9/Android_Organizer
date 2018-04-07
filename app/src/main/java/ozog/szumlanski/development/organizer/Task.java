@@ -7,15 +7,24 @@ public class Task {
     private String createDate;
     //private String notifDate;
     private String status;
+    private int priority;
 
     public Task(){
     }
 
-    public Task(int id, String content, String createDate, String status) {
+    public Task(int id, String content, String createDate, int priority) {
+        this.id = id;
+        this.content = content;
+        this.createDate = createDate;
+        this.priority = priority;
+    }
+    public Task(int id, String content, String createDate, String status, int priority) {
         this.id = id;
         this.content = content;
         this.createDate = createDate;
         this.status = status;
+        this.priority = priority;
+
     }
 
     public void setId(int id) {
@@ -46,8 +55,11 @@ public class Task {
         return notifDate;
     }*/
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setStatus(String status) { this.status = status; }
     public String getStatus() { return status; }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+    public int getPriority() { return priority; }
 }
