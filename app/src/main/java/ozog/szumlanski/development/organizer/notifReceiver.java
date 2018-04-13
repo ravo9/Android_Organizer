@@ -13,17 +13,10 @@ import android.content.Intent;
 public class notifReceiver extends BroadcastReceiver {
     public notifReceiver() {
     }
-
-    public static String NOTIFICATION_ID = "notification-id";
-    public static String NOTIFICATION = "notification";
-
+    @Override
     public void onReceive(Context context, Intent intent) {
 
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Notification notification = intent.getParcelableExtra(NOTIFICATION);
-        int id = intent.getIntExtra(NOTIFICATION_ID, 3);
-        notificationManager.notify(id, notification);
-
+        Intent intent1 = new Intent(context, notifIntentService.class);
+        context.startService(intent1);
     }
 }

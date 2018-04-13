@@ -22,12 +22,12 @@ public class DoneTasks extends AppCompatActivity {
         setContentView(R.layout.activity_done_tasks);
 
         display = new ArrayList<>();
-        adapter = new CustomArrayAdapter(display, this);
 
         doneTasksListView = findViewById(R.id.doneTasksListView);
         doneTasksListView.setAdapter(adapter);
 
         updateDoneTasks();
+        adapter = new CustomArrayAdapter(display, this);
     }
 
     public static void updateDoneTasks() {

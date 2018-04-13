@@ -45,15 +45,9 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public static int newId() {
-        int lastId = 0;
-        List<Task> allTasks = MainWindow.db.getAllTasks();
-        for(Task task : allTasks) {
-            if(task.getId() >= lastId)
-                lastId = task.getId() + 1;
-        }
-        return lastId;
-    }
+
+
+
 
     public void addTask(Task task) {
         SQLiteDatabase db = this.getWritableDatabase();

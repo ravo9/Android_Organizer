@@ -30,30 +30,34 @@ public class MainWindow extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_window);
-
         c = getApplicationContext();
-
-
-
-
         display = new ArrayList<>();
         adapter = new CustomArrayAdapter(display, this);
-
         taskList = findViewById(R.id.taskList);
         taskList.setAdapter(adapter);
-
-
         db = new Database(this);
-        //db.dropTasksTable();
-        //db.dropArchiveTable();
         db.createTable();
         updateAllTasks();
         scoreTextView = findViewById(R.id.score_text);
-        //scoreTextView.setText(s.getScore());
-        //scoreColor();
+        s = new Score();
+        scoreTextView.setText(Integer.toString(s.getScore()));
+        updateScore();
+        //try {
+
+            //
+        /*} catch(NullPointerException e) {
+            scoreTextView.setText("0");
+            scoreTextView.setBackgroundColor(getResources().getColor(R.color.gray));
+        }*/
+
 
         Log.d("Tasks in Database", Integer.toString(db.getTaskCount()));
         Log.d("Tasks in Archive", Integer.toString(db.getArchivedTaskCount()));
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateAllTasks();
     }
 
     public static void updateAllTasks() {
@@ -69,23 +73,28 @@ public class MainWindow extends AppCompatActivity {
 
         Intent intent = new Intent(this, AddTaskActivity.class);
         startActivity(intent);
-        finish();
     }
 
     public void openDoneTasks(View v) {
 
         Intent intent = new Intent(this, DoneTasks.class);
         startActivity(intent);
-        finish();
     }
 
-    public void scoreColor() {
+    public void updateScore() {
+
+        scoreTextView.setText(Integer.toString(s.getScore()));
+
         if(s.ratingColor() == 1) {
             scoreTextView.setBackgroundColor(getResources().getColor(R.color.green));
         } else if (s.ratingColor() == 2) {
             scoreTextView.setBackgroundColor(getResources().getColor(R.color.yellow));
-        } else {
+        } else  if (s.ratingColor() == 3){
             scoreTextView.setBackgroundColor(getResources().getColor(R.color.red));
+        } else if(s.ratingColor() == 0) {
+            scoreTextView.setBackgroundColor(getResources().getColor(R.color.gray));
         }
     }
+
+
 }

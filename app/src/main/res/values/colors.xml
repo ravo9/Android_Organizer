@@ -2,10 +2,12 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#fd7171</color>
+    <color name="colorAccent">#077000</color>
     <color name="red">#ffff0000</color>
     <color name="yellow">#ffff00</color>
     <color name="green">#008000</color>
+    <color name="gray">#cfcfcf</color>
+    <color name="background">#f1f1f1</color>
 
 
 </resources>

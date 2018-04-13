@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context="ozog.szumlanski.development.organizer.MainWindow">
 
     <include
@@ -11,7 +12,7 @@
         layout="@layout/content_main_window"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="69dp"
         tools:layout_editor_absoluteY="61dp" />
 
     <include
@@ -23,7 +24,7 @@
         android:id="@+id/score"
         layout="@layout/score_layout"
         android:layout_width="120dp"
-        android:layout_height="70dp"
+        android:layout_height="69dp"
         android:layout_gravity="right"
         tools:layout_editor_absoluteY="45dp" />
 

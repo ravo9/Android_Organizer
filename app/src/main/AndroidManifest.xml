@@ -21,12 +21,19 @@
         </activity>
 
         <activity android:name=".AddTaskActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible" />
 
         <activity android:name=".DoneTasks"
             android:theme="@style/AppTheme.NoActionBar" />
-        <receiver android:name=".notifReceiver" />
+        <receiver android:name=".notifReceiver"
+            android:enabled="true"
+            android:exported="false"/>
 
+        <service
+            android:name=".notifIntentService"
+            android:exported="false" >
+        </service>
 
 
     </application>

@@ -18,9 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -30,6 +32,7 @@ import org.w3c.dom.Text;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import static android.app.Notification.VISIBILITY_PUBLIC;
@@ -37,18 +40,22 @@ import static android.app.Notification.VISIBILITY_PUBLIC;
 public class AddTaskActivity extends AppCompatActivity {
 
     public static TextView taskContentInput;
+    public static RelativeLayout textLayout;
+    public static TextView reminderLbl;
     public static TextView date;
     public static TextView time;
-    public static Switch notifSwitch;
+    public static ImageButton bell;
     public static ImageButton redBtn;
     public static ImageButton yellowBtn;
     public static ImageButton greenBtn;
     Calendar myCalendar = Calendar.getInstance();
     public static Context c;
+    public static Database db;
     String currentDate;
     String currentTime;
     String currentDateTime = currentDate + " " + currentTime;
-    int priority = 0;
+    int priority = 1;
+    int notificationOn = 0;
 
 
     private AlarmManager alarmMgr;
@@ -59,28 +66,18 @@ public class AddTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
         taskContentInput = findViewById(R.id.taskContentInput);
+        textLayout = findViewById(R.id.textLayout);
         date = findViewById(R.id.date);
         time = findViewById(R.id.time);
-        notifSwitch = findViewById(R.id.notifSwitch);
+        reminderLbl = findViewById(R.id.reminderLbl);
+        bell = findViewById(R.id.bell);
+
         date.setVisibility(View.INVISIBLE);
         time.setVisibility(View.INVISIBLE);
         redBtn = findViewById(R.id.red_priority);
         yellowBtn = findViewById(R.id.yellow_priority);
         greenBtn = findViewById(R.id.green_priority);
-        taskContentInput.setVisibility(View.INVISIBLE);
 
-        notifSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                date.setVisibility(View.VISIBLE);
-                time.setVisibility(View.VISIBLE);
-            }
-        });
-        notifSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                date.setVisibility(View.VISIBLE);
-                time.setVisibility(View.VISIBLE);
-            }
-        });
 
         currentDateTime();
         date.setText(currentDate);
@@ -90,16 +87,30 @@ public class AddTaskActivity extends AppCompatActivity {
     public void createTask(View v)
     {
         currentDateTime();
-        String log;
-        Log.d("Priority: ", String.valueOf(priority));
-        MainWindow.db.addTask(new Task(Database.newId(), taskContentInput.getText().toString(), currentDateTime, priority));
-        MainWindow.updateAllTasks();
-        MainWindow.adapter.notifyDataSetChanged();
-        Intent intent = new Intent(this, MainWindow.class);
-        startActivity(intent);
+        db = new Database(MainWindow.c);
+        db.addTask(new Task(newId(), taskContentInput.getText().toString(), currentDateTime, priority));
+        notification(newId());
         finish();
     }
 
+    public void addReminder(View v) {
+
+        if(notificationOn == 0) {
+            notificationOn = 1;
+            bell.setBackground(getResources().getDrawable(
+                    R.drawable.green_bell));
+            date.setVisibility(View.VISIBLE);
+            time.setVisibility(View.VISIBLE);
+            reminderLbl.setVisibility(View.INVISIBLE);
+        } else {
+            notificationOn = 0;
+            bell.setBackground(getResources().getDrawable(
+                    R.drawable.gray_bell));
+            date.setVisibility(View.INVISIBLE);
+            time.setVisibility(View.INVISIBLE);
+            reminderLbl.setVisibility(View.VISIBLE);
+        }
+    }
 
     public void datePicker(View v) {
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -117,12 +128,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
-    private void updateDate() {
-        String myFormat = "dd/MM/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
 
-        date.setText(sdf.format(myCalendar.getTime()));
-    }
     public void timePicker(View v) {
 
         int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
@@ -141,39 +147,81 @@ public class AddTaskActivity extends AppCompatActivity {
 
     public void redTask(View v) {
         priority = 3;
+        showKeyboard();
         redBtn.setBackground(getResources().getDrawable(
                 R.drawable.red_check));
         yellowBtn.setBackground(getResources().getDrawable(
                 R.drawable.yellow_dot));
         greenBtn.setBackground(getResources().getDrawable(
                 R.drawable.green_dot));
-        taskContentInput.setBackground(getResources().getDrawable(
-                R.drawable.red_task));
-        taskContentInput.setVisibility(View.VISIBLE);
+        textLayout.setBackground(getResources().getDrawable(
+                R.drawable.red_task2));
+        textLayout.setVisibility(View.VISIBLE);
     }
     public void yellowTask(View v) {
         priority = 2;
+        showKeyboard();
         yellowBtn.setBackground(getResources().getDrawable(
                 R.drawable.yellow_check));
         redBtn.setBackground(getResources().getDrawable(
                 R.drawable.red_dot));
         greenBtn.setBackground(getResources().getDrawable(
                 R.drawable.green_dot));
-        taskContentInput.setBackground(getResources().getDrawable(
-                R.drawable.yellow_task));
-        taskContentInput.setVisibility(View.VISIBLE);
+        textLayout.setBackground(getResources().getDrawable(
+                R.drawable.yellow_task2));
+        textLayout.setVisibility(View.VISIBLE);
     }
     public void greenTask(View v) {
         priority = 1;
+        showKeyboard();
         greenBtn.setBackground(getResources().getDrawable(
                 R.drawable.green_check));
         yellowBtn.setBackground(getResources().getDrawable(
                 R.drawable.yellow_dot));
         redBtn.setBackground(getResources().getDrawable(
                 R.drawable.red_dot));
-        taskContentInput.setBackground(getResources().getDrawable(
-                R.drawable.green_task));
-        taskContentInput.setVisibility(View.VISIBLE);
+        textLayout.setBackground(getResources().getDrawable(
+                R.drawable.green_task2));
+        textLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void currentDateTime() {
+        Calendar cal = new GregorianCalendar();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        dateFormat.setTimeZone(cal.getTimeZone());
+        timeFormat.setTimeZone(cal.getTimeZone());
+        currentDate = dateFormat.format(cal.getTime());
+        currentTime = timeFormat.format(cal.getTime());
+    }
+
+    private void updateDate() {
+        String myFormat = "dd/MM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+
+        date.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void updateTime() {
+        String myFormat = "HH:mm"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+
+        time.setText(sdf.format(myCalendar.getTime()));
+    }
+    private void showKeyboard() {
+        taskContentInput.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(taskContentInput, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public static int newId() {
+        int lastId = 0;
+        List<Task> allTasks = db.getAllTasks();
+        for(Task task : allTasks) {
+            if(task.getId() >= lastId)
+                lastId = task.getId() + 1;
+        }
+        return lastId;
     }
 
 
@@ -183,44 +231,12 @@ public class AddTaskActivity extends AppCompatActivity {
 
 
     //NOTIFICATIONS
-
-
-    private void updateTime() {
-        String myFormat = "HH:mm"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
-
-        time.setText(sdf.format(myCalendar.getTime()));
-    }
-
-    private void sendNotification(String content, long notifTimeInMillis) {
-        Intent intent = new Intent(this, MainWindow.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        initChannels(this);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
-                .setSmallIcon(R.drawable.btn_add)
-                .setContentTitle("Reminder")
-                .setContentText(content)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(0, mBuilder.build());
-    }
-    public void initChannels(Context context) {
-        if (Build.VERSION.SDK_INT < 26) {
-            return;
-        }
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("default",
-                "Channel name",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("Channel description");
-        notificationManager.createNotificationChannel(channel);
+    private void notification(int notifId) {
+        Intent notifyIntent = new Intent(this,notifReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast
+                (getApplicationContext(), notifId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,  readDateTimeInMillis(), pendingIntent);
     }
 
     public long readDateTimeInMillis() {
@@ -236,41 +252,6 @@ public class AddTaskActivity extends AppCompatActivity {
         return notifdateinMilisec;
     }
 
-    private void scheduleNotification2(Notification notification, long notifTimeInMillis) {
 
-        Intent notificationIntent = new Intent(this, AddTaskActivity.class);
-        notificationIntent.putExtra(notifReceiver.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(notifReceiver.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, notifTimeInMillis, pendingIntent);
-    }
-
-    private Notification getNotification(String content) {
-        Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Scheduled Notification");
-        builder.setContentText(content);
-        builder.setSmallIcon(R.drawable.btn_add);
-        return builder.build();
-    }
-
-    public void alarmHandler() {
-        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AddTaskActivity.class);
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, readDateTimeInMillis(),
-                1000 * 60 * 20, alarmIntent);
-    }
-
-    public void currentDateTime() {
-        Calendar cal = new GregorianCalendar();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        dateFormat.setTimeZone(cal.getTimeZone());
-        timeFormat.setTimeZone(cal.getTimeZone());
-        currentDate = dateFormat.format(cal.getTime());
-        currentTime = timeFormat.format(cal.getTime());
-    }
 }

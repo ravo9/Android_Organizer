@@ -1,5 +1,8 @@
 package ozog.szumlanski.development.organizer;
 
+import android.graphics.Color;
+import android.util.Log;
+
 import java.util.List;
 
 /**
@@ -7,35 +10,45 @@ import java.util.List;
  */
 
 public class Score {
-    Database db = new Database(MainWindow.c);
-    private static List<Task> allArchivedTasks;
-    private int score = 0;
+    private int score;
+    private int perfectscore;
+    private Database db = new Database(MainWindow.c);
+    List<Task> tasks;
+    Color myWhite;
 
     public int getScore() {
-        allArchivedTasks = db.getAllArchiveTasks();
-        for(Task task : allArchivedTasks) {
-            if(task.getStatus() == "done") {
-                score += task.getPriority();
-            }
+        score = 0;
+        tasks = db.getDoneTasks();
+        for(Task task : tasks) {
+            score = score + task.getPriority();
         }
+        Log.d("Score: ", Integer.toString(score));
         return score;
+
     }
 
     private int getPerfectScore() {
-        allArchivedTasks = db.getAllArchiveTasks();
-        for(Task task : allArchivedTasks) {
-            score += task.getPriority();
+        perfectscore = 0;
+        tasks = db.getAllArchiveTasks();
+        for(Task task : tasks) {
+            perfectscore = perfectscore + task.getPriority();
         }
-        return score;
+        Log.d("Perfect score: ", Integer.toString(perfectscore));
+        return perfectscore;
     }
 
     public int ratingColor() {
-        if(getScore() > (getPerfectScore() * (3 / 4))) {
-            return 1;
-        } else if(getScore() > (getPerfectScore() * (1 / 4))) {
-            return 2;
-        } else {
-            return 3;
-        }
+
+        int color = Color.rgb(233, 223, 233);
+        Log.d("percentage: ", Integer.toString(percentage()));
+        Log.d("Color int: ", Integer.toString(color));
+         return 1;
+    }
+
+    public int percentage() {
+        int percentage;
+        percentage = getScore() / getPerfectScore();
+        percentage *= 100;
+        return percentage;
     }
 }

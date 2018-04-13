@@ -50,17 +50,17 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
 
         
         //Handle TextView and display string from your list
-        TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
+        TextView listItemText = (TextView)view.findViewById(R.id.task_text);
         listItemText.setText(list.get(position));
         if(focusedTask(position).getPriority() == 1) {
             listItemText.setBackground(MainWindow.c.getResources().getDrawable(
-                    R.drawable.green_task));
+                    R.drawable.green_task2));
         } else if(focusedTask(position).getPriority() == 2) {
             listItemText.setBackground(MainWindow.c.getResources().getDrawable(
-                    R.drawable.yellow_task));
+                    R.drawable.yellow_task2));
         } else if (focusedTask(position).getPriority() == 3) {
             listItemText.setBackground(MainWindow.c.getResources().getDrawable(
-                    R.drawable.red_task));
+                    R.drawable.red_task2));
         }
 
 
