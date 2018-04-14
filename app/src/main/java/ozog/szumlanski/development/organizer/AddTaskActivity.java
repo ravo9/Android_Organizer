@@ -39,23 +39,26 @@ import static android.app.Notification.VISIBILITY_PUBLIC;
 
 public class AddTaskActivity extends AppCompatActivity {
 
-    public static TextView taskContentInput;
-    public static RelativeLayout textLayout;
-    public static TextView reminderLbl;
-    public static TextView date;
-    public static TextView time;
-    public static ImageButton bell;
-    public static ImageButton redBtn;
-    public static ImageButton yellowBtn;
-    public static ImageButton greenBtn;
+    public TextView taskContentInput;
+    public RelativeLayout textLayout;
+    public TextView reminderLbl;
+    public TextView date;
+    public TextView time;
+    public ImageButton bell;
+    public ImageButton redBtn;
+    public ImageButton yellowBtn;
+    public ImageButton greenBtn;
     Calendar myCalendar = Calendar.getInstance();
-    public static Context c;
+    public Context c;
     public static Database db;
     String currentDate;
     String currentTime;
     String currentDateTime = currentDate + " " + currentTime;
-    int priority = 1;
+    int  priority = 1;
     int notificationOn = 0;
+    public static String notifContent;
+    public static int notifId;
+    public static int notifPriority;
 
 
     private AlarmManager alarmMgr;
@@ -88,8 +91,14 @@ public class AddTaskActivity extends AppCompatActivity {
     {
         currentDateTime();
         db = new Database(MainWindow.c);
+        notifContent = taskContentInput.getText().toString();
+        notifId = newId();
+        notifPriority = priority;
         db.addTask(new Task(newId(), taskContentInput.getText().toString(), currentDateTime, priority));
-        notification(newId());
+        if(notificationOn == 1) {
+            notification(newId());
+        }
+
         finish();
     }
 
@@ -223,12 +232,6 @@ public class AddTaskActivity extends AppCompatActivity {
         }
         return lastId;
     }
-
-
-
-
-
-
 
     //NOTIFICATIONS
     private void notification(int notifId) {

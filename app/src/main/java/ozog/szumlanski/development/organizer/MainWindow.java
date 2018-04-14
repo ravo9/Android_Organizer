@@ -42,17 +42,7 @@ public class MainWindow extends AppCompatActivity {
         s = new Score();
         scoreTextView.setText(Integer.toString(s.getScore()));
         updateScore();
-        //try {
-
-            //
-        /*} catch(NullPointerException e) {
-            scoreTextView.setText("0");
-            scoreTextView.setBackgroundColor(getResources().getColor(R.color.gray));
-        }*/
-
-
-        Log.d("Tasks in Database", Integer.toString(db.getTaskCount()));
-        Log.d("Tasks in Archive", Integer.toString(db.getArchivedTaskCount()));
+        adapterUpdate();
     }
     @Override
     protected void onResume() {
@@ -95,6 +85,14 @@ public class MainWindow extends AppCompatActivity {
             scoreTextView.setBackgroundColor(getResources().getColor(R.color.gray));
         }
     }
-
-
+    public void adapterUpdate() {
+        adapter.setOnDataChangeListener(new CustomArrayAdapter.OnDataChangeListener(){
+            public void onDataChanged(int size){
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+            }
+        });
+    }
 }

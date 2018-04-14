@@ -1,14 +1,21 @@
 package ozog.szumlanski.development.organizer;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.NotificationManagerCompat;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
 /**
  * Created by Przemek on 29/03/2018.
@@ -16,11 +23,9 @@ import java.util.List;
 
 public class notifIntentService extends IntentService {
 
-
-    private static Database db;
-    private int notifId;
-    private Task task;
-    private static final int NOTIFICATION_ID = 3;
+    private int notifId = AddTaskActivity.notifId;
+    private int priority = AddTaskActivity.notifPriority;
+    long time = System.currentTimeMillis();
 
     public notifIntentService() {
         super("MyNewIntentService");
@@ -29,25 +34,34 @@ public class notifIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Reminder:");
-        builder.setContentText("Do something");
-        builder.setSmallIcon(R.drawable.red_dot);
+        builder.setContentTitle(notifPriority());
+        builder.setContentText(AddTaskActivity.notifContent);
+        builder.setSmallIcon(R.drawable.reminder);
+        //builder.addAction(R.drawable.snooze, "+30 Minutes", snoozeIntent());
         Intent notifyIntent = new Intent(this, MainWindow.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        //to be able to launch your activity from the notification
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notifId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
         Notification notificationCompat = builder.build();
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
-        managerCompat.notify(NOTIFICATION_ID, notificationCompat);
+        managerCompat.notify(notifId, notificationCompat);
     }
 
-    public static int newestId() {
-        int lastId = 0;
-        List<Task> allTasks = db.getAllTasks();
-        for(Task task : allTasks) {
-            if(task.getId() >= lastId)
-                lastId = task.getId();
+    public String notifPriority() {
+        if(priority == 1) {
+            return "High priority";
+        } else if(priority == 2) {
+            return "Medium priority";
+        } else {
+            return "Low priority";
         }
-        return lastId;
+    }
+    public PendingIntent snoozeIntent() {
+        Intent notifyIntent = new Intent(this,notifReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast
+                (getApplicationContext(), notifId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,  time + 10000, pendingIntent);
+        return pendingIntent;
     }
 }

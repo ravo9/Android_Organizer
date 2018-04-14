@@ -31,7 +31,7 @@
             android:textSize="@dimen/task_textsize"
             style="@style/AudioFileInfoOverlayText"
             android:textColor="@color/colorPrimary"
-            android:inputType="textPersonName" />
+            android:inputType="textCapSentences" />
     </RelativeLayout>
 
     <Button
@@ -100,8 +100,8 @@
 
     <ImageButton
         android:id="@+id/red_priority"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/label"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="30dp"
@@ -110,8 +110,8 @@
 
     <ImageButton
         android:id="@+id/yellow_priority"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/label"
         android:layout_centerHorizontal="true"
         android:background="@drawable/yellow_dot"
@@ -119,8 +119,8 @@
 
     <ImageButton
         android:id="@+id/green_priority"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/label"
         android:layout_marginStart="30dp"
         android:background="@drawable/green_check"

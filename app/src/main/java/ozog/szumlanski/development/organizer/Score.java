@@ -39,10 +39,13 @@ public class Score {
 
     public int ratingColor() {
 
-        int color = Color.rgb(233, 223, 233);
-        Log.d("percentage: ", Integer.toString(percentage()));
-        Log.d("Color int: ", Integer.toString(color));
-         return 1;
+        if(getScore() > (getPerfectScore() * 0.75)) {
+            return 1;
+        } else if(getScore() > (getPerfectScore() * 0.50) && getScore() < (getPerfectScore() * 0.75)) {
+            return 2;
+        } else {
+            return 3;
+        }
     }
 
     public int percentage() {

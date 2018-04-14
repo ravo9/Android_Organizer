@@ -10,9 +10,14 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
+    private static TextView score;
+    private static Score s;
     private List<String> list;
     private Context context;
     Database db = new Database(MainWindow.c);
@@ -22,6 +27,9 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
     public CustomArrayAdapter(List<String> list, Context context) {
         this.list = list;
         this.context = context;
+    }
+    public CustomArrayAdapter() {
+
     }
 
     @Override
@@ -51,6 +59,7 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
         
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.task_text);
+        score = (TextView)view.findViewById(R.id.score_text);
         listItemText.setText(list.get(position));
         if(focusedTask(position).getPriority() == 1) {
             listItemText.setBackground(MainWindow.c.getResources().getDrawable(
@@ -78,6 +87,9 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
                 db.removeTask(focusedTask(position));
                 list.remove(position);
                 notifyDataSetChanged();
+                if(mOnDataChangeListener != null){
+                    mOnDataChangeListener.onDataChanged(getCount());
+                }
             }
         });
         doneBtn.setOnClickListener(new View.OnClickListener(){
@@ -90,6 +102,9 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
                 db.removeTask(focusedTask(position));
                 list.remove(position);
                 notifyDataSetChanged();
+                if(mOnDataChangeListener != null){
+                    mOnDataChangeListener.onDataChanged(getCount());
+                }
             }
         });
 
@@ -105,4 +120,12 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
         newId = db.getArchivedTaskCount() + 1;
         task.setId(newId);
     }
+    public interface OnDataChangeListener{
+        public void onDataChanged(int size);
+    }
+    OnDataChangeListener mOnDataChangeListener;
+    public void setOnDataChangeListener(OnDataChangeListener onDataChangeListener){
+        mOnDataChangeListener = onDataChangeListener;
+    }
+
 }
